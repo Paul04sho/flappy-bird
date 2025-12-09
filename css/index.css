@@ -1,0 +1,104 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Couleurs personnalisées */
+:root {
+    --primary-color: #87ceeb;
+    --secondary-color: #98fb98;
+    --thirdary-color: #90ee90;
+}
+
+/* Styles globaux */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Styles du conteneur principal */
+.game-container {
+   position: relative;
+   border-radius: 10px;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* Styles du canevas */
+#gameCanvas {
+    display: block;
+    background: linear-gradient(to bottom, var(--primary-color) 0%, var(--secondary-color) 70%, var(--thirdary-color) 100%);
+    border-radius: 10px;
+    border: 2px solid #333;
+}
+
+/* Etats du jeu (écran de démarrage, jeu en cours, écran de fin) */
+.ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: all;
+}
+
+.screen h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #ffd700;
+    text-shadow:  2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.screen h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #ff6b6b;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.screen p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.instructions {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.instructions p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+
+.hidden {
+    display: none; !important
+}
