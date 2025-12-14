@@ -8,35 +8,22 @@
 </head>
 <body>
 
-    <!-- Conteneur pour le jeu -->
-    <div class="game-container">
-        <canvas id="gameCanvas" width="400" height="600"></canvas>
-
-        <div class="ui-overlay">
-            <!-- Ecran de démarrage -->
-            <div id="startScreen" class="screen">
-                <h1>Flappy Clone</h1>
-                <p>Pressez la touche ESPACE ou cliquez pour commencer</p>
-                <div class="instructions">
-                    <p>Appuyez sur ESPACE ou cliquez pour faire voler l'oiseau</p>
-                    <p>Évitez les tuyaux !</p>
-                </div>
-            </div>
-
-            <!-- Ecran de fin de partie -->
-            <div id="gameOverScreen" class="screen hidden">
-                <h2>Game Over !</h2>
-                <p id="finalScore">Score: 0</p>
-                <p id="bestScore">Meilleur score: 0</p>
-                <button id="restartBtn">Rejouer</button>
-            </div>
-
-            <!-- Affichage du score en cours -->
-            <div id="gameUI" class="hidden">
-                <div id="score">0</div>
-            </div>
+    <main class="container">
+        <div class="title">
+            <h1>Flappy Bird</h1>
         </div>
-    </div>
+        <div class="game-screen">
+            <canvas id="gameCanvas" width="400" height="600"></canvas>
+        </div>
+        <p id="game-description" class="game-description">Pressez 'ESPACE' ou 'CLIQUEZ' pour commencer</p>
+
+        <div class="game-over-screen hidden">
+            <h2 class="game-over-title">Game Over !</h2>
+            <p class="display-score">Score: <span id="finalScore">0</span></p>
+            <p class="display-score">Meilleur score: <span id="bestScore">0</span></p>
+            <button id="restartButton" class="restart-button">Recommencer</button>
+        </div>
+    </main>
 
     <script src="js/app.js"></script>
 </body>
