@@ -8,7 +8,7 @@ const gameOverScreen = document.querySelector('.game-over-screen');
 const currentScoreDisplay= document.querySelector('.current-score');
 const scoreElement = document.getElementById('currentScore');
 const finalScore = document.getElementById('finalScore');
-const bestScore = document.getElementById('bestScore');
+const bestScoreElement = document.getElementById('bestScore');
 const restartBtn = document.getElementById('restartButton');
 
 // Etats de jeu (écran de début, en cours de jeu, écran de fin de partie)
@@ -18,12 +18,16 @@ const gameState = {
    GAME_OVER: 'game_over'
 };
 
+let state = gameState.DEBUT_DE_PARTIE;
+let score = 0;
+let bestScore = localStorage.getItem('flappyBest') || 0;
+
 // Objets du jeu
 const bird = {
     x: 50,
     y: canvas.height / 2,
-    width: 34,
-    height: 24,
+    width: 30,
+    height: 30,
     velocity: 0,
     gravity: 0.6,
     jumpStrength: -10,
@@ -35,38 +39,16 @@ const pipeGap = 120;
 const pipeWidth = 60;
 const pipeSpeed = 2;
 
-// Structure selon qui permet de passer d'un état à l'autre
-let currentState = gameState.DEBUT_DE_PARTIE;
 
-console.log("État initial :", currentState);
-
-currentState = gameState.EN_COURS;
-
-console.log("Nouvel état: ", currentState);
-
-switch (currentState) {
-    case gameState.DEBUT_DE_PARTIE :
-        console.log("Affichage de l'écran du début...");
-        break;
-    case gameState.EN_COURS : 
-        console.log("Chargement du jeu...");
-        // ... appel d'une fonction pour montrer le visuel du jeu ...
-        break;
-    case gameState.GAME_OVER :
-        console.log("Affichage de l'écran de fin de partie...");
-        if(gameOverScreen.classList.contains('hidden')) {
-            gameOverScreen.remove('hidden');
-        }
-        break;
-};
-
-// Pour gérer le lancement des parties
+// Pour gérer les sauts de l'oiseau 
 document.addEventListener("keydown", (e) => {
     console.log(`Touche pressée: ${e.key}`);
+    if (e.code === "Space") jump();
 });
 
 gameScreen.addEventListener("click", () => {
     console.log("1,2,3...Let's play !");
+    jump();
 });
 
 // Lorsque le joueur clique sur le bouton 'Recommencer', les éléments liés au Game Over sont cachés
@@ -135,7 +117,7 @@ function drawBird() {
     // Corps de l'oiseau
     ctx.fillStyle = bird.color;
     ctx.beginPath();
-    ctx.ellipse(0, 0, bird.width / 2, bird.height / 2, 0, 0, Math.Pi * 2);
+    ctx.ellipse(0, 0, bird.width / 2, bird.height / 2, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Ailes de l'oiseau
@@ -171,10 +153,82 @@ function drawPipes() {
     // Dessiner les obstacles du jeu
     ctx.fillStyle = '#228B22';
     pipes.forEach(pipe => {
-        //Bout de code à implémenter
-    })
+        ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+        ctx.fillRect(pipe.x, pipe.topHeight + pipe.gap, pipeWidth, canvas.height - pipe.topHeight - pipe.gap);
+
+
+        ctx.fillStyle = '#32CD32';
+        ctx.fillRect(pipe.x - 5, pipe.topHeight - 20, pipeWidth + 10, 20);
+        ctx.fillRect(pipe.x - 5, pipe.topHeight + pipe.gap, pipeWidth + 10, 20);
+        ctx.fillStyle = '#228B22';
+    });
 }
- 
+
+function update() {
+    if (state === gameState.EN_COURS) {
+        bird.velocity += bird.gravity;
+        bird.y += bird.velocity;
+
+        updatePipes();
+        checkCollisions();
+    }
+}
+
+function render() {
+    clearCanvas();
+    drawSky();
+    drawClouds();
+    drawGround();
+    drawBird();
+    drawPipes();
+}
+
+// Boucle de jeu 
+function gameLoop() {
+    update();
+    render();
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+
+function jump() {
+    if (state === gameState.DEBUT_DE_PARTIE) {
+        state = gameState.EN_COURS;
+        currentScoreDisplay.classList.remove('hidden');
+
+        if (state === gameState.EN_COURS) {
+            bird.velocity = bird.jumpStrength;
+        }
+    }
+}
+
+function generatePipe() {
+    const gap = randomPipeGap();
+    const minHeight = 50;
+    const maxHeight = canvas.height - gap - minHeight - 50;
+    const topHeight = Math.random() * (maxHeight - minHeight) + minHeight;
+
+    const distanceBetweenTwoPipe = Math.random() * (canvas.width * 2 - canvas.width) + canvas.width;
+    pipes.push({
+        x: distanceBetweenTwoPipe,
+        topHeight: topHeight,
+        gap: gap
+    });
+}
+
+function updatePipes() {
+    for (let i = pipes.length - 1; i >= 0; i--) {
+        pipes[i].x -= pipeSpeed;
+
+        // Supprime les tuyaux hors écran
+        if (pipes[i].x + pipeWidth < 0) {
+            pipes.splice(i, 1);
+            score++;
+            scoreElement.textContent = score;
+        }
+    }
+}
 
     
 
