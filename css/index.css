@@ -1,104 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Carter One', cursive;
-    background: linear-gradient(to bottom, #87ceeb 0%, #90ee90 100%);
+/* Styles appliquées au canevas */
+.canvas-container {
     display: flex;
+    /*border: 2px solid red; pour debbuger*/
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
- .game-screen {
-   width: 100%;
-   position: relative;
-   overflow: hidden;
-   border-radius: 10px;
-   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-   outline: 2px solid #333;
-}
-
-.title {
-    font-size: 22px;
-    text-transform: uppercase;
-    text-align: center;
-    color: #ffb025;
-    text-shadow: 2px 4px rgba(250,250,250, 1);
-    margin-bottom: 20px;
-}
-
-canvas {
+    height: 100vh;
     width: 100%;
-    height: auto;
-    display: block;
-    border: 2px solid #333;
-    background: linear-gradient(to bottom, #87ceeb 0%, #90ee90 100%);
-    border-radius: 10px;
 }
 
-.game-description {
-    color: white;
-    text-align: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    margin-top: 20px;
-}
-
-.game-over-screen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7);
-    padding: 60px;
-    border-radius: 15px;
-    text-align: center;
-    color: #fff;
-}
-
-.game-over-screen h2 {
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: red;
-}
-
-.display-score {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.restart-button {
-    background: #4caf50;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 25px;
-    font-size: 18px;
-    font-family: inherit;
-    color: white;
-}
-
-.restart-button:hover {
-    background: #45a049;
-    cursor: pointer;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.current-score {
-   position: absolute;
-   top: 220px;
-   left: 50%;
-   transform: translateX(-50%);
-   color: white;
-   background: rgba(0, 0, 0, 0.3);
-   padding: 10px 20px;
-   border-radius: 15px;
+#canvas {
+    background-color: #30c0df;
+    border: 2px solid black;
 }
