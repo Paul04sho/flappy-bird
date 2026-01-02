@@ -1,31 +1,10 @@
+// Pour controler les rotations de l'oiseau 
+const angleInRadians = Math.PI / 180;
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 // Permet d'utiliser les touches du clavier pour jouer
 canvas.tabIndex = 1
-
-// Pour controler les rotations de l'oiseau 
-const angleInRadians = Math.PI / 180;
-
-const state = {
-    current: 0,
-    getReady: 0,
-    Play: 1,
-    gameOver: 2,
-};
-
-let frames = 0;
-
-// Changement de coordonnée x : les tuyaux et l'arrière-plan se déplacent de 2 pixels vers la gauche à chaque frame
-let deltaX = 2;
-
-// Joue un son différent selon l'état de jeu 
-const SFX = {
-    start: new Audio(),
-    flap:  new Audio(),
-    hit:  new Audio(),
-    die:  new Audio(),
-    played: false,
-};
 
 // Permet de switcher entre les états de jeu (Début de partie, En cours, Fin de partie)
 canvas.addEventListener("click", () => {
@@ -49,7 +28,7 @@ canvas.addEventListener("click", () => {
 });
 
 canvas.onkeydown = function keyDown(e) {
-    if (e.key === ' ' || e.key === 'w' || e.key === 'ArrowUp') {
+    if (e.code === "Space" || e.code === "w" || e.code === "ArrowUp") {
         // A exécuter lorsque l'utilisateur presse la touche Espace, w ou la flèche du haut
         switch (state.current) {
             case state.getReady:
@@ -69,6 +48,28 @@ canvas.onkeydown = function keyDown(e) {
                 break;
         }
     }
+};
+
+let frames = 0;
+
+// Changement de coordonnée x : les tuyaux et l'arrière-plan se déplacent de 2 pixels vers la gauche à chaque frame
+let deltaX = 2;
+
+const state = {
+    current: 0,
+    getReady: 0,
+    Play: 1,
+    gameOver: 2,
+};
+
+// Joue un son différent selon l'état de jeu 
+const SFX = {
+    start: new Audio(),
+    flap:  new Audio(),
+    score: new Audio(),
+    hit:  new Audio(),
+    die:  new Audio(),
+    played: false,
 };
 
 // Pour dessiner le sol 
@@ -160,7 +161,7 @@ const bird = {
         ctx.restore();
     },
     update: function () {
-        // Calcule le rayon de l'oiseau (en forme de cercle)
+        // Calcule le rayon de l'oiseau (en forme de cercle) afin de faciliter la détection de collision
        let radius = parseFloat(this.animations[0].sprite.width) / 2;
        switch (state.current) {
         case state.getReady:
@@ -168,7 +169,7 @@ const bird = {
             this.y += frames % 10 == 0 ? Math.sin(frames * angleInRadians) : 0;
             break;
         case state.Play:
-            this.frame += frames % 5 == 0 ? 1: 0;
+            this.frame += frames % 5 == 0 ? 1 : 0;
             this.y += this.speed;
             this.setRotation();
             this.speed += this.gravity;
@@ -253,20 +254,93 @@ const UI = {
         this.drawScore();
     },
     drawScore: function () {
-        // Bout de code qui se charge du style du texte pour le score et son positionnement
-    }
-}
+        ctx.fillStyle = "#FFFFFF";
+        ctx.strokeStyle = "#000000";
+        switch(state.current) {
+            case state.Play:
+                ctx.lineWidth = "2";
+                ctx.font = "35px Squada One";
+                ctx.fillText(this.score.current, canvas.width / 2 - 5, 50);
+                ctx.strokeText(this.score.current, canvas.width / 2 - 5, 50);
+                break;
+            case state.gameOver:
+                ctx.lineWidth = "2";
+                ctx.font = "40px Squada One";
+                let score = `SCORE : ${this.score.current}`;
+                try {
+                    this.score.best = Math.max(
+                        this.score.current,
+                        localStorage.getItem("best")
+                    );
+                    localStorage.setItem("best", this.score.best);
+                    let bestscore = `BEST: ${this.score.best}`;
+                    ctx.fillText(score, canvas.width / 2 - 80, canvas.height / 2 + 0);
+                    ctx.strokeText(score, canvas.width / 2 - 80, canvas.height / 2 + 0);
+                    ctx.fillText(bestscore, canvas.width / 2 - 80, canvas.height / 2 + 30);
+                    ctx.strokeText(bestscore, canvas.width / 2 - 80, canvas.height / 2 + 30);
+                } catch (e) {
+                    ctx.fillText(score, canvas.width / 2 - 85, canvas.height / 2 + 15);
+                    ctx.strokeText(score, canvas.width / 2 - 85, canvas.height / 2 + 15);
+                }
+
+                break;
+        }
+    },
+    update: function () {
+        if (state.current == state.Play) return;
+        this.frame += frames % 10 == 0 ? 1 : 0;
+        this.frame = this.frame % this.tap.length;
+    },
+};
 
 // Chemin d'accès aux images et aux sons utilisé dans le jeu 
 ground.sprite.src = "img/ground.png";
 bg.sprite.src = "img/BG.png";
 pipe.top.sprite.src = "img/toppipe.png";
 pipe.bottom.sprite.src = "img/botpipe.png";
+UI.getReady.sprite.src = "img/getready.png";
+UI.gameOver.sprite.src = "img/go.png";
+UI.tap[0].sprite.src = "img/tap/t0.png";
+UI.tap[1].sprite.src = "img/tap/t1.png";
+bird.animations[0].sprite.src = "img/bird/b0.png";
+bird.animations[1].sprite.src = "img/bird/b1.png";
+bird.animations[2].sprite.src = "img/bird/b2.png";
+bird.animations[3].sprite.src = "img/bird/b0.png";
 SFX.start.src = "sfx/sfx_start.wav";
 SFX.flap.src = "sfx/sfx_flap.wav";
 SFX.score.src = "sfx/sfx_score.wav";
 SFX.hit.src = "sfx/sfx_hit.wav";
 SFX.die.src = "sfx/sfx_die.wav";
+
+// Boucle de jeu
+function gameLoop() {
+    update();
+    draw();
+    frames++;
+}
+
+// Ajuste la position des éléments du jeu en fonction de l'état
+function update() {
+    bird.update();
+    ground.update();
+    pipe.update();
+    UI.update();
+}
+
+// Rend visible le jeu et ses composants sur le canevas
+function draw() {
+    ctx.fillStyle = "#30c0df";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    bg.draw();
+    pipe.draw();
+
+    bird.draw();
+    ground.draw();
+    UI.draw();
+}
+
+setInterval(gameLoop, 20);
+
 
 
 
