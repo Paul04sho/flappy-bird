@@ -1,14 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Carter+One&display=swap');
+
+
+.game-title h1 {
+   text-align: center;
+   font-family: 'Carter One', cursive;
+   font-size: 3em;
+   letter-spacing: 4px;
+   color: rgb(251, 176, 37);
+   text-shadow: 3px 3px #000000;
+   margin-top: 30px;
+}
+
 /* Styles appliquées au canevas */
 .canvas-container {
     display: flex;
-    /*border: 2px solid red; pour debbuger*/
+    /*border: 2px solid red;*/
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100%;
 }
 
 #canvas {
     background-color: #30c0df;
     border: 2px solid black;
+}
+
+.game-description {
+    text-align: center;
+    font-size: 1.125em;
+    line-height: 2em;
 }
