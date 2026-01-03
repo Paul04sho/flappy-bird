@@ -212,7 +212,7 @@ const bird = {
             } else if (pipe.moved) {
                 UI.score.current++;
                 SFX.score.play();
-                pipe.moved.false;
+                pipe.moved = false;
             }
         }
     },
@@ -266,14 +266,15 @@ const UI = {
             case state.gameOver:
                 ctx.lineWidth = "2";
                 ctx.font = "40px Squada One";
-                let score = `SCORE : ${this.score.current}`;
+                let score = `SCORE :     ${this.score.current}`;
                 try {
                     this.score.best = Math.max(
                         this.score.current,
                         localStorage.getItem("best")
                     );
                     localStorage.setItem("best", this.score.best);
-                    let bestscore = `BEST: ${this.score.best}`;
+                    let bestscore = `BEST  :     ${this.score.best}`;
+                    localStorage.removeItem("best");
                     ctx.fillText(score, canvas.width / 2 - 80, canvas.height / 2 + 0);
                     ctx.strokeText(score, canvas.width / 2 - 80, canvas.height / 2 + 0);
                     ctx.fillText(bestscore, canvas.width / 2 - 80, canvas.height / 2 + 30);
@@ -338,6 +339,9 @@ function draw() {
     ground.draw();
     UI.draw();
 }
+
+console.log(UI.score);
+console.log(UI.score.best)
 
 setInterval(gameLoop, 20);
 
