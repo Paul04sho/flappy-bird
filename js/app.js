@@ -4,7 +4,7 @@ const angleInRadians = Math.PI / 180;
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 // Permet d'utiliser les touches du clavier pour jouer
-canvas.tabIndex = 1
+canvas.tabIndex = 1;
 
 // Permet de switcher entre les états de jeu (Début de partie, En cours, Fin de partie)
 canvas.addEventListener("click", () => {
@@ -195,6 +195,12 @@ const bird = {
         }
     },
     collisioned: function () {
+        // Le joueur perd si l'oiseau est sur le point de dépasser la partie supérieure du canevas (rep. ici par la coordonnée y)
+        if (this.y < 0) {
+            SFX.die.play();
+            return true;
+        }
+
         if (!pipe.pipes.length) return;
         let bird = this.animations[0].sprite;
         let x = pipe.pipes[0].x;
@@ -340,8 +346,8 @@ function draw() {
     UI.draw();
 }
 
-console.log(UI.score);
-console.log(UI.score.best)
+//console.log(UI.score);
+//console.log(UI.score.best)
 
 setInterval(gameLoop, 20);
 
